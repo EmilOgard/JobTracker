@@ -30,7 +30,7 @@ def add_job(job: Job):
 
     cur.execute("""
         INSERT INTO jobs(finn_code, title, description, company, location, url, status)
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
         job.finn_code,
         job.title,

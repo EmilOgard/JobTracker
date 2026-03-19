@@ -18,14 +18,10 @@ def fetch_job_from_finn(finn_code: str) -> Job:
     soup = BeautifulSoup(r.text, "html.parser")
 
     title_tag = soup.find("h2", class_="t2 md:t1 mb-6")
-    title = title_tag.get_text(strip=True)
-
-
-    title_tag = soup.find("h2", class_="t2 md:t1 mb-6")
-    title = title_tag.get_text(strip=True)
+    title = title_tag.get_text(strip=True) if title_tag else "Unknown"
 
     company_tag = soup.find("p", class_="mb-24")
-    company = company_tag.get_text(strip=True)
+    company = company_tag.get_text(strip=True) if company_tag else "Unknown"
 
 
     location = "Unknown"
