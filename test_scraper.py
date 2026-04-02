@@ -16,8 +16,17 @@ def main():
     print("\nJob: ")
     print(job)
 
-    add_job(job)
-    print("Added job to db");
+    text = input("Do you want to (a)dd, (e)edit or (d)iscard this job?")
+
+    if text == "a":
+        add_job(job)
+        print("Added job to db");
+    elif text == "e":
+        print("todo, edit")
+    elif text == "d":
+        print("todo, discard")
+    else:
+        print("unknown command")
 
 
 if __name__ == "__main__":
