@@ -52,7 +52,7 @@ def get_all_jobs():
     cur = con.cursor()
 
     cur.execute("""
-        SELECT id, finn_code, title, company, location, description, status, date_applied
+        SELECT finn_code, title, company, location, description, status, date_applied
         FROM jobs
         ORDER BY id DESC
     """)

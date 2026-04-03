@@ -12,14 +12,13 @@ def main():
     print("\n List of jobs")
     for job in jobs:
         print(f"""
-            ID: {job[0]}
-            Finncode: {job[1]}
-            Title: {job[2]}
-            Company: {job[3]}
-            Location: {job[4]}
-            Description: {job[5]}
-            Status: {job[6]}
-            Date applied: {job[7]}
+            Finncode: {job[0]}
+            Title: {job[1]}
+            Company: {job[2]}
+            Location: {job[3]}
+            Description: {job[4]}
+            Status: {job[5]}
+            Date applied: {job[6]}
         """)
 
 if __name__ == "__main__":
