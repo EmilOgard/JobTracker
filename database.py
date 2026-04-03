@@ -43,3 +43,18 @@ def add_job(job: Job):
 
     con.commit()
     con.close()
+
+
+def get_all_jobs():
+    con = sqlite3.connect(DB_NAME)
+    cur = con.cursor()
+
+    cur.execute("""
+        SELECT id, finn_code, title, company, location, description, status
+        FROM jobs
+        ORDER BY id DESC
+    """)
+
+    rows = cur.fetchall()
+    con.close()
+    return rows
