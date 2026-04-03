@@ -9,4 +9,4 @@ class Job:
     location: str | None
     url: str | None
     status: str | None
-
+    date_applied: str | None

@@ -19,6 +19,7 @@ def main():
             Location: {job[4]}
             Description: {job[5]}
             Status: {job[6]}
+            Date applied: {job[7]}
         """)
 
 if __name__ == "__main__":

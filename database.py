@@ -16,7 +16,8 @@ def init_db():
                 company TEXT,
                 location TEXT,
                 url TEXT,
-                status TEXT DEFAULT 'Applied'
+                status TEXT DEFAULT 'Applied',
+                date_applied TEXT
         )
     """)
 
@@ -29,8 +30,8 @@ def add_job(job: Job):
     cur = con.cursor()
 
     cur.execute("""
-        INSERT INTO jobs(finn_code, title, description, company, location, url, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO jobs(finn_code, title, description, company, location, url, status, date_applied)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         job.finn_code,
         job.title,
@@ -38,7 +39,8 @@ def add_job(job: Job):
         job.company,
         job.location,
         job.url,
-        job.status
+        job.status,
+        job.date_applied
     ))
 
     con.commit()
@@ -50,7 +52,7 @@ def get_all_jobs():
     cur = con.cursor()
 
     cur.execute("""
-        SELECT id, finn_code, title, company, location, description, status
+        SELECT id, finn_code, title, company, location, description, status, date_applied
         FROM jobs
         ORDER BY id DESC
     """)
@@ -58,3 +60,34 @@ def get_all_jobs():
     rows = cur.fetchall()
     con.close()
     return rows
+
+def get_job_by_id(job_id):
+    con = sqlite3.connect(DB_NAME)
+    cur = con.cursor()
+
+    cur.execute("SELECT * FROM jobs WHERE id = ?", (job_id,))
+    row = cur.fetchone()
+
+    con.close()
+    return row
+
+def update_job(job_id, job):
+    con = sqlite3.connect(DB_NAME)
+    cur = con.cursor()
+
+    cur.execute("""
+        UPDATE jobs
+        SET title=?, description=?, company=?, location=?, url=?, status=?
+        WHERE id=?
+    """, (
+        job.title,
+        job.description,
+        job.company,
+        job.location,
+        job.url,
+        job.status,
+        job_id
+    ))
+
+    con.commit()
+    con.close()

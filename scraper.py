@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from models import Job
+from datetime import datetime
 
 def extract_finn_code(text):
     match = re.search(r"(\d{8,})", text)
@@ -26,6 +27,8 @@ def fetch_job_from_finn(finn_code: str) -> Job:
 
     location = "Unknown"
 
+    date_applied = datetime.now().strftime("%d-%m-%Y")
+
 
     return Job(
         finn_code=finn_code,
@@ -34,5 +37,6 @@ def fetch_job_from_finn(finn_code: str) -> Job:
         company=company,
         location=location,
         url="",
-        status="Test"
+        status="Test",
+        date_applied=date_applied
     )
