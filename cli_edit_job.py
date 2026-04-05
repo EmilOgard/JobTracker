@@ -1,7 +1,7 @@
 from database import init_db, get_job_by_id, update_job
 from models import Job
 
-def edit_job(job):
+def edit_job_cli(job):
     print("Edit job")
 
     title = input(f"Title [{job.title}]: ")
@@ -51,7 +51,7 @@ def main():
         status=row[7]
     )
 
-    job = edit_job(job)
+    job = edit_job_cli(job)
     update_job(job_id, job)
 
     print("Job updated")
