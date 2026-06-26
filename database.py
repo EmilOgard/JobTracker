@@ -24,27 +24,52 @@ def init_db():
     con.commit()
     con.close()
 
+def job_exists(finn_code):
+    con = sqlite3.connect(DB_NAME)
+    cur = con.cursor()
+
+    cur.execute("SELECT 1 FROM jobs WHERE finn_code=?", (finn_code, ))
+    exists = cur.fetchone() is not None
+
+    con.close()
+    return exists
+
+def get_stats():
+    con = sqlite3.connect(DB_NAME)
+    cur = con.cursor()
+
+    cur.execute("SELECT COUNT(*) FROM jobs")
+    total = cur.fetchone()[0]
+
+    con.close()
+    return total
 
 def add_job(job: Job):
     con = sqlite3.connect(DB_NAME)
     cur = con.cursor()
 
-    cur.execute("""
-        INSERT INTO jobs(finn_code, title, description, company, location, url, status, date_applied)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        job.finn_code,
-        job.title,
-        job.description,
-        job.company,
-        job.location,
-        job.url,
-        job.status,
-        job.date_applied
-    ))
+    try:
+        cur.execute("""
+            INSERT INTO jobs(finn_code, title, description, company, location, url, status, date_applied)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            job.finn_code,
+            job.title,
+            job.description,
+            job.company,
+            job.location,
+            job.url,
+            job.status,
+            job.date_applied
+        ))
 
-    con.commit()
-    con.close()
+        con.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    
+    finally: 
+        con.close()
 
 
 def get_all_jobs():

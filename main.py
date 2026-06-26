@@ -1,12 +1,12 @@
 import sys
-from database import init_db, get_all_jobs, add_job, update_job
+from database import init_db, get_all_jobs, add_job, update_job, get_stats, job_exists
 from scraper import extract_finn_code, fetch_job_from_finn
 from dialog import JobEditDialog
 from models import Job
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QInputDialog,
     QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem,
-    QDialog, QFormLayout, QLineEdit, QHBoxLayout, QAbstractItemView
+    QDialog, QFormLayout, QLineEdit, QHBoxLayout, QAbstractItemView, QMessageBox
 )
 
 
@@ -17,7 +17,10 @@ class JobTracker(QMainWindow):
         self.setWindowTitle("Job Tracker")
         self.resize(800, 500)
 
+        self.stats_label = QLabel()
+
         layout = QVBoxLayout()
+        layout.addWidget(self.stats_label)
 
         self.add_button = QPushButton("Add Job")
         self.add_button.clicked.connect(self.add_job_dialog)
@@ -37,6 +40,7 @@ class JobTracker(QMainWindow):
 
     def load_jobs(self):
         jobs = get_all_jobs()
+        total = get_stats()
 
         self.table.setRowCount(len(jobs))
         self.table.setColumnCount(6)
@@ -52,6 +56,10 @@ class JobTracker(QMainWindow):
             self.table.setItem(row_idx, 4, QTableWidgetItem(str(row[3])))  # description
             self.table.setItem(row_idx, 5, QTableWidgetItem(str(row[7])))  # status
 
+        self.stats_label.setText(
+            f"Total jobs: {total}"
+        )
+
     def add_job_dialog(self):
         text, ok = QInputDialog.getText(self, "Add Job", "Enter FinnCode")
 
@@ -64,14 +72,21 @@ class JobTracker(QMainWindow):
             print("Invalid code")
             return
         
+        if job_exists(code):
+            QMessageBox.information(self, "Duplicate", "Job alreadt added.")
+            return
+
         job = fetch_job_from_finn(code)
 
         dialog = JobEditDialog(job)
 
         if dialog.exec():
             updated_job = dialog.get_updated_job()
-            add_job(updated_job)
-            self.load_jobs()
+            success = add_job(updated_job)
+            if not success:
+                QMessagebox.warning(self, "Duplicate", "Job aleady in list.")
+            else:
+                self.load_jobs()
         else:
             print("User cancelled")
     
@@ -80,6 +95,9 @@ class JobTracker(QMainWindow):
         jobs = get_all_jobs()
         sel_row = jobs[row]
 
+        # alt:
+        # self.jobs = get_all_jobs()
+        # sel_row = self.jobs[row]
         job = Job(
             finn_code=sel_row[1],
             title=sel_row[2],

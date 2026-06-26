@@ -37,6 +37,6 @@ def fetch_job_from_finn(finn_code: str) -> Job:
         company=company,
         location=location,
         url="",
-        status="Test",
+        status="Applied",
         date_applied=date_applied
     )
